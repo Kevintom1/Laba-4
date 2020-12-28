@@ -1,150 +1,64 @@
 #include <iostream>
-#include <Windows.h>
 using namespace std;
-
-class Person
+class transport
 {
-private:
-	int id{ -1 };
-	string name{ "NONE" };
-	int age{ -1 };
-	float height{ -1 };
+protected:
+	string mark;
+	string model;
+	int price;
+	int count;
 public:
-	Person() : id(-1), name("NONE"), age(-1), height(-1)
-	{ }
-
-	// Геттеры
-	int getID() const { return id; }
-	string getName() const { return name; }
-	int getAge() const { return age; }
-	float getHeight() const { return height; }
-	void showInfo() const
+	transport() : mark(" "), model(" "), price(0), count(0)
+	{}
+	transport(string mk, string mdl, int Price, int Count) : mark(mk), model(mdl), price(Price), count(Count)
+	{}
+	void ShowData()
 	{
-		cout << "ID: " << id << "\tИмя: " << name << "\tВозраст: " << age << "\tРост: " << height << endl;
+		cout << "марка " << mark << "\nмодель " << model << "\nцена " << price << "$" << "\nколичестов на складе " << count;
 	}
-
-	// Сеттеры
-	void setID()
-	{
-		cout << "Введите ID: ";
-		cin >> id;
-	}
-	void setName()
-	{
-		cout << "Введите имя: ";
-		cin >> name;
-	}
-	void setAge()
-	{
-		cout << "Введите возраст: ";
-		cin >> age;
-	}
-	void setHeight()
-	{
-		cout << "Введите рост: ";
-		cin >> height;
-	}
-	void setInfo();
 };
-
-void Person::setInfo()
+class Car : public transport
 {
-	setID();
-	setName();
-	setAge();
-	setHeight();
-}
-
-Person* findByID(Person*, const int N, const int id); // Функция поиска человека по id в массиве людей размером N
-													  // возвращает указатель на человека или нулевой указатель, если человек не найден
-
+public:
+	Car(string mk, string mdl, int Price, int Count) : transport(mk, mdl, Price, Count)
+	{}
+	void ShowData()
+	{
+		cout << "\nмарка " << mark << "\nмодель " << model << "\nцена " << price << "$" << "\nколичество на складе " << count;
+	}
+};
+class Motocycle : public transport
+{
+public:
+	Motocycle(string mk, string mdl, int Price, int Count) : transport(mk, mdl, Price, Count)
+	{}
+	void ShowData()
+	{
+		cout << "\nмарка " << mark << "\nмодель " << model << "\nцена " << price << "$" << "\nколичество на складе " << count;
+	}
+};
 int main()
 {
-	SetConsoleOutputCP(1251);
-	SetConsoleCP(1251);
-
-	// Создание массива
-	int people_count{ 0 }; // Количество людей
-	cout << "Введите количество людей: ";
-	cin >> people_count;
-	if (people_count < 1)
-	{
-		cerr << "ОШИБКА: количество людей не может быть меньше 1!\n";
-		system("pause");
-		return 1;
-	}
-	Person* people = new Person[people_count]; // Массив с людьми
-
-	// Заполнение массива
-	for (int i = 0; i < people_count; i++)
-	{
-		cout << "\nВвод информации о " << i + 1 << " человеке:\n";
-		people[i].setInfo();
-	}
-
-	// Работа с массивом
-	int decision{ 0 }; // Действие, выбранное пользователем: 
-					   // 0 - завершить работу, 1 - посмотреть список имен, 2 - посмотреть полную информацию о человеке, 3 - изменить конкретную информацию о человеке
-	bool flg = true; // true - продолжение работы с массивом, false - завершение работы 
-	int id{ -1 }; // id человека для редактирования
-	Person* prsn{ NULL };
-	do
-	{
-		cout << "\nВыберите действие:\n0 - завершить работу\n1 - посмотреть список имен\n2 - посмотреть полную информацию о человеке\n3 - изменить конкретную информацию о человеке\n"
-			<< "Введите номер выбранного действия: ";
-		cin >> decision;
-
-		switch (decision)
+	int x;
+	char ch = ' ';
+	setlocale(LC_ALL, "rus");
+	Car user1("Ford", "Mustang", 5000, 13);
+	Motocycle user2("Kawasaki", "Ninja 400 ABS", 2500, 5);
+	do {
+		cout << "\nЕсли хоите посмотреть информацию о мотоциклах нажмите 1.\nЕсли хоите посмотреть информацию о машинах нажмите 2: ";
+		cin >> x;
+		switch (x)
 		{
-		case 0:
-			flg = false;
-			break;
 		case 1:
-			cout << "ID\tИмя\n";
-			for (int i = 0; i < people_count; i++)
-				cout << people[i].getID() << '\t' << people[i].getName() << endl;
+			user2.ShowData();
 			break;
 		case 2:
-			cout << "Введите id человека: ";
-			cin >> id;
-			prsn = findByID(people, people_count, id);
-			if (prsn != NULL) prsn->showInfo();
-			else cout << "Человек с требуемым ID не найден, попробуйте еще раз!\n";
-			prsn = NULL;
+			user1.ShowData();
 			break;
-		case 3:
-			cout << "Введите id человека: ";
-			cin >> id;
-			prsn = findByID(people, people_count, id);
-			if (prsn != NULL)
-			{
-				cout << "Введите измененную информацию:\n";
-				prsn->setInfo();
-			}
-			else cout << "Человек с требуемым ID не найден, попробуйте еще раз!\n";
-			prsn = NULL;
-			break;
-		default:
-			cout << "Такого варианта действия не существует, попробуйте еще раз!\n";
-			break;
-		}
-	} while (flg);
 
-	delete[] people;
-	people = NULL;
-	system("pause");
-	return 0;
-}
-
-Person* findByID(Person* people, const int N, const int id)
-{
-	for (int i = 0; i < N; i++)
-	{
-		if (id == people[i].getID())
-		{
-			return &people[i];
-			break;
 		}
-	}
-	return NULL;
+		cout << "\nЕсли хоите продолжить работу программы нажмите y. Если хоите продолжить работу программы нажмите n: ";
+		cin >> ch;
+	} while (ch != 'n');
+	return(0);
 }
